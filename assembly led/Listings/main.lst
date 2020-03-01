@@ -1,0 +1,223 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;This is the first ARM Assembly language program you see
+                        in the lab
+    2 00000000         ;This program template was created by Airs Lin @ 2017 Ca
+                       lifornia State University of Los Angeles.
+    3 00000000         ;When you write your program, you could have your info a
+                       t the top document block
+    4 00000000         ;For Example:  Your Name, Student Number, what the progr
+                       am is for, and what it does etc.
+    5 00000000         
+    6 00000000         ; Constant Variable Here
+    7 00000000 20008000 
+                       STACK_ADDR_123G
+                               EQU              0x20008000
+    8 00000000         
+    9 00000000                 THUMB
+   10 00000000         
+   11 00000000         ; Vector Table Mapped to Address 0 at Reset
+   12 00000000         ; Linker requires __Vectors to be exported
+   13 00000000         
+   14 00000000                 AREA             RESET, DATA, READONLY
+   15 00000000                 EXPORT           __Vectors
+   16 00000000         __Vectors
+   17 00000000 20008000        DCD              STACK_ADDR_123G ; stack pointer
+                                                             value when stack i
+                                                            s empty
+   18 00000004 00000000        DCD              Reset_Handler ; reset vector
+   19 00000008         
+   20 00000008                 ALIGN
+   21 00000008         
+   22 00000008         ; The program
+   23 00000008         ; Linker requires Reset_Handler
+   24 00000008         
+   25 00000008                 AREA             |.text|, CODE, READONLY
+   26 00000000                 ENTRY                        ; mark first instru
+                                                            ction to execute
+   27 00000000                 EXPORT           Reset_Handler
+   28 00000000         Reset_Handler
+   29 00000000         ;;;;;;;;;; Your Main Code Starts from the next line ;;;;
+                       ;;;;;;;;
+   30 00000000         
+   31 00000000 4917            LDR              R1,=0x400FE608 ;GPIO_RCGC     
+   32 00000002 6808            LDR              R0,[R1]
+   33 00000004 F040 0020       ORR              R0,R0,#0x20
+   34 00000008 6008            STR              R0,[R1]
+   35 0000000A BF00            NOP
+   36 0000000C BF00            NOP
+   37 0000000E BF00            NOP
+   38 00000010         
+   39 00000010 4914            LDR              R1,= 0x40025520 ;Lock
+   40 00000012 F04F 0000       MOV              R0,#0
+   41 00000016 F040 4098       ORR              R0,R0,#0x4C000000
+   42 0000001A F440 009E       ORR              R0,R0,#0x004F0000
+   43 0000001E F440 4086       ORR              R0,R0,#0x00004300
+   44 00000022 F040 004B       ORR              R0,R0,#0x0000004B
+   45 00000026 6008            STR              R0,[R1]
+   46 00000028         
+   47 00000028 490F            LDR              R1,= 0x40025524 ;Commit
+   48 0000002A 6808            LDR              R0,[R1]
+   49 0000002C F040 001F       ORR              R0,R0,#0x1F
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   50 00000030 6008            STR              R0,[R1]
+   51 00000032         
+   52 00000032 490E            LDR              R1,= 0x40025400 ;Direction
+   53 00000034 6808            LDR              R0,[R1]
+   54 00000036 F040 000E       ORR              R0,R0,#0x0E
+   55 0000003A 6008            STR              R0,[R1]
+   56 0000003C         
+   57 0000003C 490C            LDR              R1, = 0x4002551C 
+                                                            ;Digital Enable
+   58 0000003E 6808            LDR              R0,[R1]
+   59 00000040 F040 001F       ORR              R0,R0,#0x1F
+   60 00000044 6008            STR              R0,[R1]
+   61 00000046         
+   62 00000046 490B            LDR              R1, = 0x40025510 ;Pull up
+   63 00000048 6808            LDR              R0,[R1]
+   64 0000004A F040 0011       ORR              R0,R0,#0x11
+   65 0000004E 6008            STR              R0,[R1]
+   66 00000050         
+   67 00000050 4909            LDR              R1,= 0x400253FC ;Data
+   68 00000052 6808            LDR              R0,[R1]
+   69 00000054 F040 0006       ORR              R0,R0,#0x06
+   70 00000058 6008            STR              R0,[R1]
+   71 0000005A         
+   72 0000005A         
+   73 0000005A F100 0004       ADD              R0, R0, #4
+   74 0000005E E7FE    DeadLoop
+                               B                DeadLoop
+   75 00000060         
+   76 00000060         ; The constant variable area
+   77 00000060         ; The value will be stored on ROM segment
+   78 00000060 400FE608 
+              40025520 
+              40025524 
+              40025400 
+              4002551C 
+              40025510 
+              400253FC         AREA             ConstantVariables, DATA, READON
+LY
+   79 00000000         
+   80 00000000         ; The variables area
+   81 00000000         ; The variables will be assigned to RAM area
+   82 00000000                 AREA             Variables, DATA, READWRITE
+   83 00000000         
+   84 00000000                 END                          ; End of the progra
+                                                            m
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\main.d -o.\objects\main.o -I.\RTE\_Target_1 -I"C:\
+Users\Ahmed Moamen\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\T
+M4C123" -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine=
+"__UVISION_VERSION SETA 529" --predefine="TM4C123GH6PM SETA 1" --list=.\listing
+s\main.lst main.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+RESET 00000000
+
+Symbol: RESET
+   Definitions
+      At line 14 in file main.s
+   Uses
+      None
+Comment: RESET unused
+__Vectors 00000000
+
+Symbol: __Vectors
+   Definitions
+      At line 16 in file main.s
+   Uses
+      At line 15 in file main.s
+Comment: __Vectors used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 25 in file main.s
+   Uses
+      None
+Comment: .text unused
+DeadLoop 0000005E
+
+Symbol: DeadLoop
+   Definitions
+      At line 74 in file main.s
+   Uses
+      At line 74 in file main.s
+Comment: DeadLoop used once
+Reset_Handler 00000000
+
+Symbol: Reset_Handler
+   Definitions
+      At line 28 in file main.s
+   Uses
+      At line 18 in file main.s
+      At line 27 in file main.s
+
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+ConstantVariables 00000000
+
+Symbol: ConstantVariables
+   Definitions
+      At line 78 in file main.s
+   Uses
+      None
+Comment: ConstantVariables unused
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+Variables 00000000
+
+Symbol: Variables
+   Definitions
+      At line 82 in file main.s
+   Uses
+      None
+Comment: Variables unused
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+STACK_ADDR_123G 20008000
+
+Symbol: STACK_ADDR_123G
+   Definitions
+      At line 7 in file main.s
+   Uses
+      At line 17 in file main.s
+Comment: STACK_ADDR_123G used once
+1 symbol
+344 symbols in table
